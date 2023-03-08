@@ -1,5 +1,10 @@
 import { legacy_createStore as createStore } from "redux";
-import { configureStore, createAction, createReducer } from "@reduxjs/toolkit";
+import {
+  configureStore,
+  createAction,
+  createReducer,
+  createSlice,
+} from "@reduxjs/toolkit";
 
 /* export const addToDo = (text, id) => {
   return {
@@ -15,8 +20,8 @@ export const deleteToDo = (id) => {
   };
 }; */
 
-export const addToDo = createAction("ADD");
-export const deleteToDo = createAction("DELETE");
+// export const addToDo = createAction("ADD");
+// export const deleteToDo = createAction("DELETE");
 
 //console.log(addToDo(), deleteToDo());
 /* const reducer = (state = [], action) => {
@@ -31,16 +36,32 @@ export const deleteToDo = createAction("DELETE");
   }
 }; */
 
-const reducer = createReducer([], {
-  [addToDo]: (state, action) => {
-    state.unshift({ text: action.payload.text, id: action.payload.id });
-  },
-  [deleteToDo]: (state, action) =>
-    state.filter((toDo) => toDo.id !== action.payload),
-});
+// const reducer = createReducer([], {
+//   [addToDo]: (state, action) => {
+//     state.push({ text: action.payload.text, id: action.payload.id });
+//   },
+//   [deleteToDo]: (state, action) =>
+//     state.filter((toDo) => toDo.id !== action.payload),
+// });
 // when you use createReducer func, you can mutate state .... "Immer" inside redux toolkit helps you, it will return new state
 // *So* when you mutate your state.. don't return it by your self. Let Immer do that
 
+const toDos = createSlice({
+  name: "toDosReducer",
+  initialState: [],
+  reducers: {
+    add: (state, action) => {
+      state.push({ text: action.payload.text, id: action.payload.id });
+    },
+    remove: (state, action) =>
+      state.filter((toDo) => toDo.id !== action.payload),
+  },
+});
+
 //const store = createStore(reducer);
-const store = configureStore({ reducer });
+// const store = configureStore({ reducer });
+const store = configureStore({ reducer: toDos.reducer });
+
+export const { add, remove } = toDos.actions;
+
 export default store;

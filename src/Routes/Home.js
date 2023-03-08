@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { addToDo, deleteToDo } from "../redux/store";
+import { add, remove } from "../redux/store";
 
 function Home() {
   const [text, setText] = useState("");
@@ -14,28 +14,28 @@ function Home() {
   };
 
   const dispatch = useDispatch();
-  const onClick = () => {
+  const addClicked = () => {
     const id = Date.now();
-    dispatch(addToDo({ text, id })); // the way to set multiple data in payload
+    dispatch(add({ text, id })); // the way to set multiple data in payload
   };
   const currentState = useSelector((state) => state);
-  //console.log(currentState);
-  const btnOnClick = (event) => {
-    const targetId = parseInt(event.target.parentNode.id);
-    dispatch(deleteToDo(targetId));
+
+  const deleteClicked = (id) => {
+    dispatch(remove(id));
   };
+
   return (
     <>
       <h1>To Dos</h1>
       <form onSubmit={onSubmit}>
         <input type="text" value={text} onChange={onChange} />
-        <button onClick={onClick}>Add</button>
+        <button onClick={addClicked}>Add</button>
       </form>
       <ul>
-        {currentState.map((state) => (
-          <li key={state.id} id={state.id}>
+        {currentState.map((state, index) => (
+          <li key={index}>
             <h2>{state.text}</h2>
-            <button onClick={btnOnClick}>X</button>
+            <button onClick={() => deleteClicked(state.id)}>X</button>
           </li>
         ))}
       </ul>
